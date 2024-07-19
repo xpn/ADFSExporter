@@ -1,0 +1,25 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+      - name: Restore Packages
+        run: nuget restore ADFSExporter.sln
+      - name: Build Solution
+        run: msbuild ADFSExporter.sln /p:Configuration=Release
+
+# Gather artifacts
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ADFSExporter
+          path: ADFSExporter/bin/Release
